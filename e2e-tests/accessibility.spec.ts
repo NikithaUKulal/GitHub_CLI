@@ -220,4 +220,33 @@ test.describe('Accessibility Tests', () => {
       await expect(gameCardSvgs.nth(i)).toHaveAttribute('aria-hidden', 'true');
     }
   });
+
+  test('high contrast mode - should toggle and persist across reloads', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('[data-testid="games-grid"]', { timeout: 10000 });
+
+    const contrastToggle = page.getByRole('button', { name: /enable high contrast mode/i });
+
+    await test.step('Enable high contrast mode with the keyboard', async () => {
+      await contrastToggle.focus();
+      await page.keyboard.press('Enter');
+      await expect(page.locator('html')).toHaveClass(/high-contrast/);
+      const enabledToggle = page.getByRole('button', { name: /disable high contrast mode/i });
+      await expect(enabledToggle).toHaveAttribute('aria-pressed', 'true');
+      await expect(enabledToggle).toHaveAttribute('aria-label', 'Disable high contrast mode');
+    });
+
+    await test.step('Verify the preference persists after reload', async () => {
+      await page.reload();
+      await expect(page.locator('html')).toHaveClass(/high-contrast/);
+      await expect(page.getByRole('button', { name: /disable high contrast mode/i })).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    await test.step('Disable high contrast mode', async () => {
+      const enabledToggle = page.getByRole('button', { name: /disable high contrast mode/i });
+      await enabledToggle.click();
+      await expect(page.locator('html')).not.toHaveClass(/high-contrast/);
+      await expect(page.getByRole('button', { name: /enable high contrast mode/i })).toHaveAttribute('aria-pressed', 'false');
+    });
+  });
 });
