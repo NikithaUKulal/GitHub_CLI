@@ -21,6 +21,12 @@ const { title = "Tailspin Toys" } = Astro.props;
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <script is:inline>
+            const preference = localStorage.getItem('tailspin-high-contrast');
+            if (preference === 'true') {
+                document.documentElement.classList.add('high-contrast');
+            }
+        </script>
     </head>
     <body class="min-h-screen bg-slate-900 text-white transition-colors duration-300 m-0 w-full h-full font-sans">
         <Header />
@@ -45,5 +51,44 @@ const { title = "Tailspin Toys" } = Astro.props;
     body {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+    }
+
+    .high-contrast {
+        color-scheme: dark;
+    }
+
+    .high-contrast body,
+    .high-contrast .bg-slate-900,
+    .high-contrast .bg-slate-800,
+    .high-contrast .bg-slate-800\/60,
+    .high-contrast .bg-slate-800\/50 {
+        background-color: #000;
+        color: #fff;
+    }
+
+    .high-contrast [class*="text-slate-"],
+    .high-contrast .text-white {
+        color: #fff;
+    }
+
+    .high-contrast [class*="border-slate-"] {
+        border-color: #fff;
+    }
+
+    .high-contrast [class*="text-blue-"],
+    .high-contrast [class*="text-purple-"] {
+        color: #ffff00;
+    }
+
+    .high-contrast [class*="bg-blue-"],
+    .high-contrast [class*="bg-gradient-"] {
+        background: #ffff00;
+        color: #000;
+    }
+
+    .high-contrast a:focus-visible,
+    .high-contrast button:focus-visible {
+        outline: 3px solid #ffff00;
+        outline-offset: 3px;
     }
 </style>
